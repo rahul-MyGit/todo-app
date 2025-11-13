@@ -1,3 +1,151 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Dashboard - Todos</title>
+</head>
 <body>
-    Todos page
+    <h1>Your Todos</h1>
+    
+    <div>
+        <input id="todoInput" type="text" placeholder="Enter a new todo" />
+        <button id="addTodoBtn" onclick="addTodo()">Add Todo</button>
+    </div>
+
+    <ul id="todosList"></ul>
+    <div id="error" class="error"></div>
+
+    <script>
+        let userId = null;
+
+        function getUserIdFromURL() {
+            const urlParams = new URLSearchParams(window.location.search);
+            return parseInt(urlParams.get('id'));
+        }
+
+        async function fetchTodos() {
+                const response = await fetch(`http://localhost:3000/todo?userId=${userId}`);
+                const data = await response.json();
+                if (data.success) {
+                    displayTodos(data.todos);
+                } else {
+                    document.getElementById('error').innerHTML = data.message;
+                }
+        }
+
+        function displayTodos(todos) {
+            const todosListDiv = document.getElementById('todosList');
+            if (todos.length === 0) {
+                todosListDiv.innerHTML = '<p class="no-todos">No todos found. Please add more.</p>';
+            } else {
+                todosListDiv.innerHTML = todos.map((todo) => 
+                    `<li>
+                        <span class="todo-text">${todo.text}</span>
+                        <button onclick="editTodo(this, ${todo.id})">Edit</button>
+                        <button onclick="deleteTodo(this, ${todo.id})">Delete</button>
+                    </li>`
+                ).join('');
+            }
+        }
+
+        async function editTodo(button, todoId) {
+            const li = button.parentElement;
+            const todoTextSpan = li.querySelector('.todo-text');
+            const currentText = todoTextSpan.textContent;
+            
+            const newText = prompt("Edit your todo:", currentText);
+            
+            if (newText === null || newText.trim() === '') {
+                return;
+            }
+            
+            const response = await fetch(`http://localhost:3000/todo`, {
+                method: 'PUT',
+                headers: {
+                    'Content-Type': 'application/json'
+                },
+                body: JSON.stringify({
+                    userId: userId,
+                    todoId: todoId,
+                    text: newText.trim()
+                })
+            });
+            const data = await response.json();
+            if (data.success) {
+                todoTextSpan.textContent = newText.trim();
+                document.getElementById('error').innerHTML = '';
+            } else {
+                document.getElementById('error').innerHTML = "Error updating todo";
+            }
+        }
+
+        async function deleteTodo(button, todoId) {
+            const li = button.parentElement;
+                const response = await fetch(`http://localhost:3000/todo`, {
+                    method: 'DELETE',
+                    headers: {
+                        'Content-Type': 'application/json'
+                    },
+                    body: JSON.stringify({
+                        userId: userId,
+                        todoId:todoId
+                    })
+                });
+                const data = await response.json();
+                if (data.success) {
+                    li.remove();
+                    document.getElementById('error').innerHTML = '';
+                } else {
+                    document.getElementById('error').innerHTML = "Error deleting todo";
+                }
+        }
+
+        async function addTodo() {
+            const todoInput = document.getElementById('todoInput');
+            const todoText = todoInput.value.trim();
+
+            if (!todoText) {
+                document.getElementById('error').innerHTML = "Please enter a todo";
+                return;
+            }
+
+                const response = await fetch('http://localhost:3000/todo', {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json'
+                    },
+                    body: JSON.stringify({
+                        userId: userId,
+                        todo: todoText
+                    })
+                });
+                const data = await response.json();
+                if (data.success) {
+                    todoInput.value = '';
+                    document.getElementById('error').innerHTML = '';
+                    fetchTodos();
+                } else {
+                    document.getElementById('error').innerHTML = "Error adding todo";
+                }
+        }
+
+        window.onload = function() {
+            userId = getUserIdFromURL();
+            if (!userId && userId !== 0) {
+                document.getElementById('error').innerHTML = "Invalid user ID";
+                return;
+            }
+            fetchTodos();
+        }
+
+        document.addEventListener('DOMContentLoaded', function() {
+            document.getElementById('todoInput').addEventListener('keypress', function(e) {
+                if (e.key === 'Enter') {
+                    addTodo();
+                }
+            });
+        });
+    </script>
 </body>
+</html>

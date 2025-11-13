@@ -1,3 +1,1 @@
-{
-    "users":[]
-}
+{"users":[{"id":0,"username":"rahul@gmail.com","password":"asd@123","todos":[]},{"id":1,"username":"rahul2@gmail.com","password":"asd@1232","todos":[]},{"id":2,"username":"asd@asd.com","password":"asd123","todos":[]},{"id":3,"username":"rrr@gmail.com","password":"r@123","todos":[]},{"id":4,"username":"asd21@gmail.com","password":"asdds@123","todos":[]},{"id":5,"username":"rrr@asd.com","password":"ddsss","todos":[{"id":0,"text":"rrrrrrrr","completed":false},{"id":1,"text":"rrrrrrrr333","completed":false},{"id":2,"text":"tttt","completed":false}]},{"id":6,"username":"fff@asd.com","password":"123321123","todos":[]}]}

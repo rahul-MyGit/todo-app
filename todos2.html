@@ -1,0 +1,85 @@
+<html>
+<body>
+    <h1>Todos</h1>
+    <div id="todos"></div>
+
+
+    <div>
+        <input id="todoInput" type="text" placeholder="Enter a new todo" />
+        <button id="addTodoBtn" onclick="postTodo()">Add Todo</button>
+    </div>
+
+    <div id="error"></div>
+    <ul id="todosList"></ul>
+
+    <script>
+
+        let userId = null;
+
+        function getUserIdFromURL(){
+            const urlParams = new URLSearchParams(window.location.search);
+            return parseInt(urlParams.get('id'));
+        }
+
+        function displayTodos(todos){  //array in params 
+            const todosList = document.getElementById("todosList");
+            todosList.innerHTML = todos.map(todo => `<li id="${todo.id}"> 
+                                            <span>${todo.text}</span> 
+                                            <button onclick="deleteTodo(this, ${todo.id})">Delete</button>
+                                            </li>`).join('');
+        }
+        function deleteTodo(button, todoId){
+            const li = button.parentElement;
+            li.remove();
+        }
+
+        async function toFetchAllTodo(){
+            const res =  await fetch(`http://localhost:3000/todos?userId=${userId}`, {
+                method: "GET",
+                headers: {
+                    "Content-Type": "application/json"
+                },
+            })
+            const json = await res.json();  // {success: true, todos: []}  || {success: true, todos: [{}, {}]}
+            if(json.success){
+                if(json.todos.length > 0){
+                    displayTodos(json.todos);
+                } else {
+                    document.getElementById("error").innerHTML = "No todos found, Please add a todo";
+                }
+            }
+        }
+
+        window.onload = function() {
+            userId = getUserIdFromURL();
+            toFetchAllTodo()
+        }
+
+        async function postTodo(){
+            const todoInput = document.getElementById("todoInput");
+            const todoText = todoInput.value.trim();
+            if(!todoText){
+                console.log("EMPTY")
+                return;
+            }
+            const res = await fetch(`http://localhost:3000/todo`, {
+                method: "POST",
+                headers: {
+                    "Content-Type": "application/json"
+                },
+                body: JSON.stringify({
+                    userId: userId,
+                    todo: todoText
+                })
+            })
+            const json = await res.json();   //{success: true, todoId: 1}
+            if(json.success){
+                todoText.value = '';
+                toFetchAllTodo();
+            }
+        }
+
+
+    </script>
+</body>
+</html>

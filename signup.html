@@ -23,8 +23,13 @@
                     }
                 })
                 let json = await response.json();
-
                 document.getElementById("result").innerHTML = "You have signed up, your id is " + json.id
+
+                if(json.success){
+                    window.location.href = `http://localhost:3000/dashboard?id=${json.id}`;
+                } else {
+                    document.getElementById("result").innerHTML = json.message;
+                }
             }
         </script>
     </body>

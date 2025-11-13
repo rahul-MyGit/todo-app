@@ -45,7 +45,7 @@ app.post("/signup", (req, res) => {
 })
 
 app.get("/dashboard", (req, res) => {
-    res.sendFile(__dirname + "/todos.html")
+    res.sendFile(__dirname + "/todos2.html")
 })
 
 app.post("/todo", (req, res) => {
@@ -106,7 +106,7 @@ app.delete("/todo", (req, res) => {
     });
 })
 
-app.get("/todo", (req, res) => {
+app.get("/todos", (req, res) => {
     const userId = parseInt(req.query.userId);
     
     const fileContents = fs.readFileSync("users.txt", "utf-8");
