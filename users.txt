@@ -1,1 +1,3 @@
-{"users":[{"id":1,"username":"asdadasdadss","password":"adsaadsadsdsdas","todos":[]},{"id":1,"username":"asdasd","password":"asdasdads","todos":[]},{"id":2,"username":"asdasd","password":"asdasdads","todos":[]},{"id":3,"username":"asdasd","password":"asdasdads","todos":[]},{"id":4,"username":"asdasd","password":"asdasdads","todos":[]},{"id":5,"username":"asd","password":"ads","todos":[]},{"id":6,"username":"asdasd","password":"asdasdasd","todos":[]},{"id":7,"username":"asddas","password":"asddsa","todos":[]},{"id":8,"username":"asddasasdasd","password":"asddsaasdasd","todos":[]},{"id":9,"username":"asddasasdasdadsasd","password":"asddsaasdasdasdads","todos":[]},{"id":10,"username":"asdasd","password":"asdasd","todos":[]}]}
+{
+    "users":[]
+}
